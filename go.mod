@@ -1,4 +1,4 @@
-module github.com/Gambitier/gotestx
+module github.com/gambitier/gotestx
 
 go 1.24.3
 
