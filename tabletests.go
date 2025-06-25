@@ -6,9 +6,9 @@ import (
 )
 
 type TableTestCase[I any, O any] struct {
-	Name   string     `json:"name,omitempty"`
-	Input  I          `json:"input"`
-	Assert func(I, O) `json:"-"`
+	Name   string                 `json:"name,omitempty"`
+	Input  I                      `json:"input"`
+	Assert func(*testing.T, I, O) `json:"-"`
 }
 
 func RunTableTests[I any, O any](t *testing.T, tests []TableTestCase[I, O], fn func(I) O) {
@@ -28,7 +28,7 @@ func RunTableTests[I any, O any](t *testing.T, tests []TableTestCase[I, O], fn f
 
 		t.Run(name, func(t *testing.T) {
 			actual := fn(tc.Input)
-			tc.Assert(tc.Input, actual)
+			tc.Assert(t, tc.Input, actual)
 		})
 	}
 }

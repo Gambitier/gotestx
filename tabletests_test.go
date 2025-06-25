@@ -13,21 +13,21 @@ func TestStringLength(t *testing.T) {
 		{
 			Name:  "empty string",
 			Input: "",
-			Assert: func(input string, actual int) {
+			Assert: func(t *testing.T, input string, actual int) {
 				assert.Equal(t, 0, actual, "empty string should have length 0")
 			},
 		},
 		{
 			Name:  "single character",
 			Input: "a",
-			Assert: func(input string, actual int) {
+			Assert: func(t *testing.T, input string, actual int) {
 				assert.Equal(t, 1, actual, "single character should have length 1")
 			},
 		},
 		{
 			Name:  "multiple characters",
 			Input: "hello world",
-			Assert: func(input string, actual int) {
+			Assert: func(t *testing.T, input string, actual int) {
 				assert.Equal(t, 11, actual, "should count all characters including space")
 			},
 		},
@@ -44,28 +44,28 @@ func TestIsPalindrome(t *testing.T) {
 		{
 			Name:  "empty string is palindrome",
 			Input: "",
-			Assert: func(input string, actual bool) {
+			Assert: func(t *testing.T, input string, actual bool) {
 				assert.True(t, actual, "empty string should be considered palindrome")
 			},
 		},
 		{
 			Name:  "single character is palindrome",
 			Input: "a",
-			Assert: func(input string, actual bool) {
+			Assert: func(t *testing.T, input string, actual bool) {
 				assert.True(t, actual, "single character should be palindrome")
 			},
 		},
 		{
 			Name:  "palindrome word",
 			Input: "racecar",
-			Assert: func(input string, actual bool) {
+			Assert: func(t *testing.T, input string, actual bool) {
 				assert.True(t, actual, "racecar should be palindrome")
 			},
 		},
 		{
 			Name:  "non-palindrome word",
 			Input: "hello",
-			Assert: func(input string, actual bool) {
+			Assert: func(t *testing.T, input string, actual bool) {
 				assert.False(t, actual, "hello should not be palindrome")
 			},
 		},
@@ -97,7 +97,7 @@ func TestPersonToTags(t *testing.T) {
 		{
 			Name:  "young person",
 			Input: Person{Name: "Alice", Age: 20},
-			Assert: func(input Person, actual []string) {
+			Assert: func(t *testing.T, input Person, actual []string) {
 				assert.Contains(t, actual, "young")
 				assert.Contains(t, actual, "Alice")
 				assert.Len(t, actual, 2)
@@ -106,7 +106,7 @@ func TestPersonToTags(t *testing.T) {
 		{
 			Name:  "adult person",
 			Input: Person{Name: "Bob", Age: 35},
-			Assert: func(input Person, actual []string) {
+			Assert: func(t *testing.T, input Person, actual []string) {
 				assert.Contains(t, actual, "adult")
 				assert.Contains(t, actual, "Bob")
 				assert.Len(t, actual, 2)
@@ -115,7 +115,7 @@ func TestPersonToTags(t *testing.T) {
 		{
 			Name:  "senior person",
 			Input: Person{Name: "Charlie", Age: 70},
-			Assert: func(input Person, actual []string) {
+			Assert: func(t *testing.T, input Person, actual []string) {
 				assert.Contains(t, actual, "senior")
 				assert.Contains(t, actual, "Charlie")
 				assert.Len(t, actual, 2)
@@ -150,21 +150,21 @@ func TestStringContains(t *testing.T) {
 		{
 			Name:  "case sensitive match",
 			Input: StringOperation{Text: "Hello World", Pattern: "World", CaseSensitive: true},
-			Assert: func(input StringOperation, actual bool) {
+			Assert: func(t *testing.T, input StringOperation, actual bool) {
 				assert.True(t, actual, "should find 'World' in 'Hello World'")
 			},
 		},
 		{
 			Name:  "case sensitive no match",
 			Input: StringOperation{Text: "Hello World", Pattern: "world", CaseSensitive: true},
-			Assert: func(input StringOperation, actual bool) {
+			Assert: func(t *testing.T, input StringOperation, actual bool) {
 				assert.False(t, actual, "should not find 'world' in 'Hello World' (case sensitive)")
 			},
 		},
 		{
 			Name:  "case insensitive match",
 			Input: StringOperation{Text: "Hello World", Pattern: "world", CaseSensitive: false},
-			Assert: func(input StringOperation, actual bool) {
+			Assert: func(t *testing.T, input StringOperation, actual bool) {
 				assert.True(t, actual, "should find 'world' in 'Hello World' (case insensitive)")
 			},
 		},
@@ -184,7 +184,7 @@ func TestStringProcessing(t *testing.T) {
 		{
 			Name:  "mixed case string",
 			Input: "Hello World 123!",
-			Assert: func(input string, actual map[string]interface{}) {
+			Assert: func(t *testing.T, input string, actual map[string]interface{}) {
 				assert.Equal(t, 15, actual["length"])
 				assert.Equal(t, 2, actual["words"])
 				assert.Equal(t, 2, actual["uppercase"])
@@ -196,7 +196,7 @@ func TestStringProcessing(t *testing.T) {
 		{
 			Name:  "empty string",
 			Input: "",
-			Assert: func(input string, actual map[string]interface{}) {
+			Assert: func(t *testing.T, input string, actual map[string]interface{}) {
 				assert.Equal(t, 0, actual["length"])
 				assert.Equal(t, 0, actual["words"])
 				assert.Equal(t, 0, actual["uppercase"])
@@ -246,7 +246,7 @@ func TestStringProcessing(t *testing.T) {
 // Example 6: Using custom assertion helpers
 func TestWithCustomAssertions(t *testing.T) {
 	// Custom assertion helper
-	assertEven := func(input int, actual bool) {
+	assertEven := func(t *testing.T, input int, actual bool) {
 		if input%2 == 0 {
 			assert.True(t, actual, "even number %d should return true", input)
 		} else {
@@ -265,4 +265,39 @@ func TestWithCustomAssertions(t *testing.T) {
 	RunTableTests(t, tests, func(input int) bool {
 		return input%2 == 0
 	})
+}
+
+func TestLeapYear(t *testing.T) {
+	type input struct {
+		Year int
+	}
+
+	tests := []TableTestCase[input, bool]{
+		{
+			Name:  "leap year",
+			Input: input{2000},
+			Assert: func(t *testing.T, ip input, op bool) {
+				assert.True(t, op)
+			},
+		},
+		{
+			Name:  "not leap year",
+			Input: input{2003},
+			Assert: func(t *testing.T, ip input, op bool) {
+				assert.False(t, op)
+			},
+		},
+		{
+			Input: input{2004},
+			Assert: func(t *testing.T, ip input, op bool) {
+				assert.False(t, op)
+			},
+		},
+	}
+
+	leapYear := func(input input) bool {
+		return input.Year%4 == 0
+	}
+
+	RunTableTests(t, tests, leapYear)
 }
